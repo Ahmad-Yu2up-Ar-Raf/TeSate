@@ -9,11 +9,14 @@ import QuranIcon from '@/components/ui/fragments/svg/icons/quran';
 import MasjidIcon from '@/components/ui/fragments/svg/icons/masjid';
 import { View } from 'react-native';
 import SettingIcon from '@/components/ui/fragments/svg/icons/setting';
+import HomeIcon from '@/components/ui/fragments/svg/icons/home';
+import { Text } from '@/components/ui/fragments/shadcn-ui/text';
+import { cn } from '@/lib/utils';
 
 export default function TabsLayout() {
   const { colorScheme } = useColorScheme();
   const currentTheme = colorScheme ?? 'light';
-  const tintColor = THEME[currentTheme].primary;
+  const tintColor = THEME[currentTheme].secondary;
   const backgroundColor = THEME[currentTheme].background;
   const inactiveTintColor = THEME[currentTheme].mutedForeground;
 
@@ -26,12 +29,12 @@ export default function TabsLayout() {
           tabBarButton: HapticTab,
 
           tabBarActiveTintColor: tintColor,
-          tabBarShowLabel: false,
+         
           tabBarInactiveTintColor: inactiveTintColor,
           tabBarStyle: {
             backgroundColor,
 
-            height: 70 + insets.bottom, // ✅ CRITICAL: Tinggi + bottom inset
+            height: 80 + insets.bottom, // ✅ CRITICAL: Tinggi + bottom inset
             paddingTop: 20,
             display: 'flex',
             alignItems: 'center',
@@ -39,30 +42,31 @@ export default function TabsLayout() {
             borderTopWidth: 0.01,
             borderTopColor: THEME[currentTheme].border,
           },
+          
         }}>
         <Tabs.Screen
           name="index"
           options={{
             title: 'Home',
-            tabBarIcon: ({ color, focused }) => (
-              <View className="mb-1 size-full scale-110">
-                <MasjidIcon fill={color} />
+            tabBarLabel: ({ color, focused }) => (
+              <Text className={cn("text-xs  mt-1.5 ", focused ? 'font-poppins_semibold text-secondary' : " font-poppins_medium  text-muted-foreground ")}>Home</Text>
+            ),
+            tabBarButton: HapticTab,
+             tabBarIcon: ({ color, focused }) => (
+              <View className="scale-1">
+                <HomeIcon fill={color} />
               </View>
             ),
           }}
         />
+    
         <Tabs.Screen
-          name="kiblat"
+          name="quran"
           options={{
-            title: 'Kiblat',
-            tabBarIcon: ({ color, focused }) => <KabbahIcon fill={color} />,
-          }}
-        />
-        <Tabs.Screen
-          name="surah"
-          options={{
-            title: 'Surah',
-
+            title: 'Quran',
+      tabBarLabel: ({ color, focused }) => (
+              <Text className={cn("text-xs  mt-1.5 ", focused ? 'font-poppins_semibold text-secondary' : " font-poppins_medium  text-muted-foreground ")}>Quran</Text>
+            ),
             tabBarButton: HapticTab,
             tabBarIcon: ({ color, focused }) => (
               <View className="scale-1">
@@ -71,10 +75,24 @@ export default function TabsLayout() {
             ),
           }}
         />
+            <Tabs.Screen
+          name="qibla"
+          options={{
+            
+            title: 'Qibla',
+             tabBarLabel: ({ color, focused }) => (
+              <Text className={cn("text-xs  mt-1.5 ", focused ? 'font-poppins_semibold text-secondary' : " font-poppins_medium text-muted-foreground ")}>Qibla</Text>
+            ),
+            tabBarIcon: ({ color, focused }) => <KabbahIcon fill={color} />,
+          }}
+        />
         <Tabs.Screen
           name="settings"
           options={{
             title: 'Settings',
+             tabBarLabel: ({ color, focused }) => (
+              <Text className={cn("text-xs  mt-1.5 ", focused ? 'font-poppins_semibold text-secondary' : " font-poppins_medium  text-muted-foreground ")}>Settings</Text>
+            ),
             tabBarIcon: ({ color, focused }) => (
               <View className="mb-1 size-full p-0.5">
                 <SettingIcon fill={color} />

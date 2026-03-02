@@ -78,7 +78,7 @@ function Text({
   const Component = asChild ? Slot.Text : RNText;
   return (
     <Component
-      className={cn(textVariants({ variant }), textClass, className)}
+      className={cn(textVariants({ variant }), textClass,  'font-poppins_regular', className,)}
       role={variant ? ROLE[variant] : undefined}
       aria-level={variant ? ARIA_LEVEL[variant] : undefined}
       {...props}

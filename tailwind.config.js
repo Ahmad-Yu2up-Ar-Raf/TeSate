@@ -66,12 +66,19 @@ module.exports = {
       },
     },
     fontFamily: {
-      cinzel_regular: ['Cinzel_400Regular', 'sans-serif'],
-      cinzel_medium: ['Cinzel_500Medium', 'sans-serif'],
-      cinzel_semibold: ['Cinzel_600SemiBold', 'sans-serif'],
-      cinzel_bold: ['Cinzel_700Bold', 'sans-serif'],
-      cinzel_extrabold: ['Cinzel_800ExtraBold', 'sans-serif'],
-      cinzel_black: ['Cinzel_900Black', 'sans-serif'],
+ 
+      poppins_regular: ['poppins_regular', 'sans-serif'],
+      poppins_medium: ['poppins_medium', 'sans-serif'],
+      poppins_semibold: ['poppins_semibold', 'sans-serif'],
+      poppins_bold: ['poppins_bold', 'sans-serif'],
+    
+        sans: [
+          "poppins_regular",
+          "poppins_medium",
+          "poppins_semibold",
+          "poppins_bold",
+     
+        ],
     },
   },
   future: {
