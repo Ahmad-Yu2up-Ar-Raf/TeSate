@@ -75,6 +75,11 @@ module.exports = {
       // sans: ['poppins_regular', 'poppins_medium', 'poppins_semibold', 'poppins_bold'],
       schluber: ['Schluber'],
       arabic: ['Arabic'],
+      teko_light: ['Teko_300Light'],
+      teko_regular: ['Teko_400Regular'],
+      teko_medium: ['Teko_500Medium'],
+      teko_semibold: ['Teko_600SemiBold'],
+      teko_bold: ['Teko_700Bold'],
     },
   },
   future: {

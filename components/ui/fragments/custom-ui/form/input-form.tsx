@@ -160,7 +160,7 @@ export const GroupedInputItem = forwardRef<TextInputB, GroupedInputItemProps>(
         <View className="flex flex-col gap-1.5">
           <View
             className={cn(
-              'relative flex-row items-center rounded-xl border',
+              'relative flex-row items-center rounded-2xl border',
               // PRIORITY: Error > Focus > Default
               error
                 ? 'border-destructive' // Error tetap merah meski focused

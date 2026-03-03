@@ -9,6 +9,9 @@ import { useColorScheme } from 'nativewind';
 import { focusManager, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppState, Platform, View } from 'react-native';
 import type { AppStateStatus } from 'react-native';
+import { AudioProvider } from './AudioProvider';
+import { BookmarkProvider } from './BookmarkProvider';
+import { LastReadProvider } from './LastReadProvider';
 
 type ComponentProps = {
   children?: React.ReactNode;
@@ -112,8 +115,11 @@ export default function Provider({ children }: ComponentProps) {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
         <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-
-        {children}
+        <LastReadProvider>
+          <AudioProvider>
+            <BookmarkProvider>{children}</BookmarkProvider>
+          </AudioProvider>
+        </LastReadProvider>
 
         <PortalHost />
       </ThemeProvider>

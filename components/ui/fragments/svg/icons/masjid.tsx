@@ -1,19 +1,25 @@
+import { THEME } from '@/lib/theme';
+import { useColorScheme } from 'nativewind';
 import * as React from 'react';
 import Svg, { SvgProps, Path } from 'react-native-svg';
-const MasjidIcon = (props: SvgProps) => (
-  <Svg
+const MasjidIcon = (props: SvgProps) => {
+  const { colorScheme } = useColorScheme();
+  const currentTheme = colorScheme ?? 'light';
+  const mutedForeground = THEME[currentTheme].mutedForeground;
+  const backgroundColor = THEME[currentTheme].background;
 
-    data-name="Flat Color"
-    viewBox="0 0 24 24"
-    {...props}>
-    <Path
-      d="M14.21 4.78a1 1 0 0 0-1.42 0 .76.76 0 1 1-1.07-1.07 1 1 0 0 0 0-1.42 1 1 0 0 0-1.41 0 2.75 2.75 0 0 0 0 3.9 2.55 2.55 0 0 0 .69.49V9a1 1 0 0 0 2 0V6.88a2.69 2.69 0 0 0 1.21-.69 1 1 0 0 0 0-1.41Z"
-      fill={props.fill}
-    />
-    <Path
-      d="M17.23 11.94a16.83 16.83 0 0 1-4.46-3.57 1 1 0 0 0-1.54 0 16.83 16.83 0 0 1-4.46 3.57C4.14 13.36 3 15 3 17.33a9.82 9.82 0 0 0 1.08 4.06A1 1 0 0 0 5 22h14a1 1 0 0 0 .92-.61A9.82 9.82 0 0 0 21 17.33c0-2.33-1.14-3.97-3.77-5.39Z"
-      fill={props.fill}
-    />
-  </Svg>
-);
+  return (
+    <Svg
+      viewBox="0 -64 640 640"
+      stroke={backgroundColor}
+      
+      fill={props.fill ?? mutedForeground}
+      width={20}
+      height={20}
+      opacity={currentTheme == 'light' ? 0.3 : 0.6}
+      {...props}>
+      <Path d="M0 480c0 17.67 14.33 32 32 32h64c17.67 0 32-14.33 32-32V160H0v320zm579.16-192c17.86-17.39 28.84-37.34 28.84-58.91 0-52.86-41.79-93.79-87.92-122.9-41.94-26.47-80.63-57.77-111.96-96.22L400 0l-8.12 9.97c-31.33 38.45-70.01 69.76-111.96 96.22C233.79 135.3 192 176.23 192 229.09c0 21.57 10.98 41.52 28.84 58.91h358.32zM608 320H192c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h32v-64c0-17.67 14.33-32 32-32s32 14.33 32 32v64h64v-72c0-48 48-72 48-72s48 24 48 72v72h64v-64c0-17.67 14.33-32 32-32s32 14.33 32 32v64h32c17.67 0 32-14.33 32-32V352c0-17.67-14.33-32-32-32zM64 0S0 32 0 96v32h128V96c0-64-64-96-64-96z" />
+    </Svg>
+  );
+};
 export default MasjidIcon;

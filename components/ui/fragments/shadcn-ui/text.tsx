@@ -16,7 +16,7 @@ const textVariants = cva(
       variant: {
         default: '',
         h1: cn(
-          'text-center text-4xl font-extrabold tracking-tight',
+          'text-center text-4xl font-extrabold  tracking-tight',
           Platform.select({ web: 'scroll-m-20 text-balance' })
         ),
         h2: cn(
@@ -78,7 +78,7 @@ function Text({
   const Component = asChild ? Slot.Text : RNText;
   return (
     <Component
-      className={cn(textVariants({ variant }), textClass, 'font-poppins_regular', className)}
+      className={cn('font-poppins_regular', textVariants({ variant }), textClass, className)}
       role={variant ? ROLE[variant] : undefined}
       aria-level={variant ? ARIA_LEVEL[variant] : undefined}
       {...props}

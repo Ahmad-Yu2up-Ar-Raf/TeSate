@@ -79,6 +79,7 @@ export default function TabsLayout() {
         <Tabs.Screen
           name="quran"
           options={{
+            headerShown: false,
             title: 'Quran',
             tabBarLabel: ({ color, focused }) => (
               <Text
