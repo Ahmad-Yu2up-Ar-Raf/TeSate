@@ -1,20 +1,9 @@
 import { Button } from '@/components/ui/fragments/shadcn-ui/button';
 import { Icon } from '@/components/ui/fragments/shadcn-ui/icon';
-import { Text } from '@/components/ui/fragments/shadcn-ui/text';
-
-import {
-  MoonStarIcon,
-  XIcon,
-  SunIcon,
-  ChevronLeft,
-  ChevronRight,
-  HamburgerIcon,
-  Search,
-  MenuIcon,
-} from 'lucide-react-native';
-import { useColorScheme } from 'nativewind';
+ 
+import { Search, MenuIcon } from 'lucide-react-native';
 import * as React from 'react';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 
 const SCREEN_OPTIONS_HOME = {
   header: () => (
@@ -23,8 +12,8 @@ const SCREEN_OPTIONS_HOME = {
         <Icon as={MenuIcon} className="size-5" />
       </Button>
 
-      <Text variant={'h3'} className="font-poppins_semibold text-xl uppercase">
-        Deen muslim
+      <Text   className="  font-schluber text-2xl uppercase">
+       Gurun
       </Text>
 
       <Button variant={'ghost'} size={'icon'}>

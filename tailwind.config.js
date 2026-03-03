@@ -66,19 +66,15 @@ module.exports = {
       },
     },
     fontFamily: {
- 
-      poppins_regular: ['poppins_regular', 'sans-serif'],
-      poppins_medium: ['poppins_medium', 'sans-serif'],
-      poppins_semibold: ['poppins_semibold', 'sans-serif'],
-      poppins_bold: ['poppins_bold', 'sans-serif'],
-    
-        sans: [
-          "poppins_regular",
-          "poppins_medium",
-          "poppins_semibold",
-          "poppins_bold",
-     
-        ],
+      poppins_regular: ['Poppins_400Regular', 'sans-serif'],
+      poppins_medium: ['Poppins_500Medium', 'sans-serif'],
+      poppins_semibold: ['Poppins_600SemiBold', 'sans-serif'],
+      poppins_bold: ['Poppins_700Bold', 'sans-serif'],
+      // schluber: ['Schluber', 'sans-serif'],
+      // arabic: ['Arabic', 'sans-serif'],
+      // sans: ['poppins_regular', 'poppins_medium', 'poppins_semibold', 'poppins_bold'],
+      schluber: ['Schluber'],
+      arabic: ['Arabic'],
     },
   },
   future: {

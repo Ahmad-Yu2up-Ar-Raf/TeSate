@@ -112,9 +112,9 @@ export default function Provider({ children }: ComponentProps) {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
         <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-        <View style={{ flex: 1 }} className="font-sans">
+
         {children}
-        </View>
+
         <PortalHost />
       </ThemeProvider>
     </QueryClientProvider>
