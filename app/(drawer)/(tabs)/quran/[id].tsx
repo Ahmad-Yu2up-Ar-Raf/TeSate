@@ -4,7 +4,7 @@ import React from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import SurahBlock from '@/components/ui/core/block/surah-block';
-import { ChevronLeft, MoreHorizontal, PlayCircleIcon } from 'lucide-react-native';
+import { ChevronLeft, MoreHorizontal, MoreVertical, PlayCircleIcon } from 'lucide-react-native';
 import { SCREEN_OPTIONS } from '@/components/ui/core/layout/header';
 
 export default function Page() {
@@ -21,7 +21,7 @@ export default function Page() {
             title: nameSurah, // ✅ pakai name dari params, bukan hardcode
             transparent: false,
             leftIcon: ChevronLeft,
-            rightIcon: MoreHorizontal,
+            rightIcon: MoreVertical,
           })}
         />
         <View style={styles.center}>

@@ -13,6 +13,7 @@ import { View, ViewProps } from 'react-native';
 import { Text } from '../../shadcn-ui/text';
 
 import { Datum } from '@/type/asmaul-husna';
+import { batasiKata } from '@/hooks/useWord';
 
 type componentProps = ViewProps & {
   className?: string;
@@ -20,6 +21,7 @@ type componentProps = ViewProps & {
 };
 
 export function AsmaulHusnaCard({ className, asmaulHusna, ...props }: componentProps) {
+  const Arti = batasiKata(asmaulHusna.arti, 3);
   return (
     <Card
       className={cn(
@@ -50,7 +52,7 @@ export function AsmaulHusnaCard({ className, asmaulHusna, ...props }: componentP
         <Text
           variant={'muted'}
           className="tracing-tigther line-clamp-1 w-full font-poppins_medium text-[9px] leading-relaxed text-muted-foreground/80">
-          {asmaulHusna.arti}
+          {Arti}
         </Text>
       </CardContent>
     </Card>

@@ -1,13 +1,11 @@
 import React from 'react';
 import { SCREEN_OPTIONS } from '@/components/ui/core/layout/header';
-import {  Stack } from 'expo-router';
-import FiltersCarousel from '@/components/ui/fragments/custom-ui/carousel/filter-carousel';
+import { Stack } from 'expo-router';
 
 export default function HomeLayout() {
-
   return (
     <Stack>
-      <Stack.Screen name="index"options={SCREEN_OPTIONS({ title: 'Dua'  })}/>
+      <Stack.Screen name="index" options={SCREEN_OPTIONS({ title: 'Dua' })} />
       {/* Tambahkan screen lain di sini jika ada nested routes */}
     </Stack>
   );

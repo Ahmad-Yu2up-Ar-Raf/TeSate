@@ -1,13 +1,14 @@
 import React from 'react';
 
 import { Stack } from 'expo-router';
+import { SCREEN_OPTIONS } from '@/components/ui/core/layout/header';
 
 export default function HomeLayout() {
 
 
   return (
     <Stack>
-      <Stack.Screen name="index" />
+       <Stack.Screen name="index" options={SCREEN_OPTIONS({ title: 'Dzikir'  })}/>
       {/* Tambahkan screen lain di sini jika ada nested routes */}
     </Stack>
   );

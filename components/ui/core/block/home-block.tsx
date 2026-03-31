@@ -18,7 +18,7 @@ import { THEME } from '@/lib/theme';
 import HomeMenuCard from '../../fragments/custom-ui/card/home-menu-card';
 import PrayerScheduleCard from '../../fragments/custom-ui/card/prayer-shcedule-card';
 
-const HERO_HEIGHT = 350;
+const HERO_HEIGHT = 320;
 
 export default function HomeBlock() {
   const { nextPrayer, remaining, city, dateString } = usePrayer();
@@ -95,10 +95,10 @@ export default function HomeBlock() {
       </View>
 
       {/* ── Sections ─────────────────────────────────────────────────────── */}
-      <View className="gap-6 px-4 pb-10">
+      {/* <View className="gap-6 px-4 pb-10">
         <HomeMenuCard />
         <PrayerScheduleCard />
-      </View>
+      </View> */}
     </Wrapper>
   );
 }
