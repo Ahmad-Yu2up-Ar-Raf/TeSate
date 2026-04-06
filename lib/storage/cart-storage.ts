@@ -73,6 +73,7 @@ export async function addToCart(product: Product, quantity: number = 1): Promise
       }
 
       await saveCart(cart);
+      return cart;
     } catch (error) {
       console.error('❌ addToCart error:', error);
       throw error;

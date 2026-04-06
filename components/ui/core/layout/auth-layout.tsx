@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import {
   Card,
   CardContent,
@@ -15,6 +15,11 @@ import { View } from 'react-native';
 import LogoApp from '../../fragments/svg/logo-app';
 import { Button } from '../../fragments/shadcn-ui/button';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import Animated, {
+  useAnimatedKeyboard,
+  useAnimatedStyle,
+  KeyboardState,
+} from 'react-native-reanimated';
 import { Spinner } from '../../fragments/shadcn-ui/spinner';
 
 type AuthLayoutProps = {
@@ -34,6 +39,7 @@ type AuthLayoutProps = {
 
 const AuthLayout = ({
   formType,
+
   numberOfIterations,
   className,
   loading = false,
@@ -47,20 +53,27 @@ const AuthLayout = ({
 }: AuthLayoutProps) => {
   const insets = useSafeAreaInsets();
 
-  // ✅ FIX: Define offset constants
-  const BOTTOM_CLOSED = insets.bottom > 0 ? insets.bottom : 12;
-  const BOTTOM_OPEN = 8;
+  // ✅ useAnimatedKeyboard: hook reanimated yang track tinggi keyboard secara real-time
+  // Jauh lebih smooth dibanding Keyboard.addListener karena berjalan di UI thread langsung
+  const keyboard = useAnimatedKeyboard();
 
-  // ✅ FIX: Simple button position style (NO complex Reanimated)
-  const containerStyle = useMemo(() => ({
-    bottom: BOTTOM_CLOSED,
-  }), [BOTTOM_CLOSED]);
+  // Offset saat keyboard TIDAK aktif → pakai safe area inset agar tidak mepet bawah
+  const bottomWhenClosed = insets.bottom > 0 ? insets.bottom : 12;
+  // Offset saat keyboard AKTIF → cukup padding kecil (8px) karena safe area
+  // sudah "tertelan" oleh keyboard — tanpa ini terjadi double-spacing yang terlalu lebar
+  const bottomWhenOpen = 8;
 
-  // ✅ FIX #4: Memoize form type calculations
-  const formTypeConfig = useMemo(() => ({
-    label: formType == 'register' ? 'Login' : 'Register',
-    link: formType == 'register' ? '/(auth)/sign-in' : '/(auth)/sign-up',
-  }), [formType]);
+  const animatedButtonStyle = useAnimatedStyle(() => {
+    const isKeyboardOpen = keyboard.height.value > 0;
+    return {
+      bottom: isKeyboardOpen
+        ? keyboard.height.value + bottomWhenOpen // keyboard aktif: tipis saja
+        : bottomWhenClosed, // keyboard tutup: pakai safe area
+    };
+  });
+
+  const formTypeLabel = formType == 'register' ? 'Login' : 'Register';
+  const formTypeLink = formType == 'register' ? '/(auth)/sign-in' : '/(auth)/sign-up';
 
   return (
     <SafeAreaView
@@ -68,7 +81,7 @@ const AuthLayout = ({
       className="h-full content-start items-start justify-start bg-card p-7 sm:flex-1">
       <Card className="relative m-auto flex h-full w-full max-w-sm content-start justify-start gap-5 border-0 bg-transparent px-0 shadow-none sm:border-border">
         <CardHeader className="relative mb-1 flex w-full flex-col content-start items-center justify-start gap-6 p-0">
-          <View className="size-fit scale-150">
+          <View className="size-fit scale-110">
             <LogoApp className="relative m-auto size-full overflow-visible" />
           </View>
           <View>
@@ -79,13 +92,11 @@ const AuthLayout = ({
           </View>
         </CardHeader>
 
-        <CardContent className="mb-0 gap-6 p-0">
+        <CardContent className="mb-0 h-fit gap-6 p-0">
           <View className="gap-2.5">{props.children}</View>
         </CardContent>
-        
-        {/* ✅ FIX #5: Social connections and form type navigation - explicitly check signInGoogleButton */}
-        {signInGoogleButton === true && (
-          <CardFooter className="relative mt-0 flex w-full flex-col gap-5 overflow-hidden p-0">
+        {signInGoogleButton && (
+          <CardFooter className="relative flex w-full flex-col gap-5 overflow-hidden p-0">
             <View className="flex-row items-center">
               <Separator className="flex-1" />
               <Text className="px-4 text-sm text-muted-foreground">atau lanjutkan dengan</Text>
@@ -95,8 +106,8 @@ const AuthLayout = ({
             {formType && (
               <Text className="mt-2 text-start text-sm text-muted-foreground">
                 {formType == 'register' ? `Sudah punya akun? ` : ' Belum punya akun? '}
-                <Link href={formTypeConfig.link} className="text-primary underline underline-offset-4">
-                  {formTypeConfig.label}
+                <Link href={formTypeLink} className="text-primary underline underline-offset-4">
+                  {formTypeLabel}
                 </Link>
               </Text>
             )}
@@ -104,13 +115,13 @@ const AuthLayout = ({
         )}
       </Card>
 
-      {/* ✅ Button at bottom with simple positioning */}
-      <View className="absolute left-0 right-0 px-5" style={containerStyle}>
+      {/* ✅ Animated.View menggantikan View biasa agar bisa menerima animatedButtonStyle */}
+      <Animated.View className="absolute left-0 right-0 px-5" style={animatedButtonStyle}>
         <Button variant="default" size={'lg'} onPress={onPress} disabled={loading}>
           <Text className="font-cinzel_black text-lg text-primary-foreground">{textButton}</Text>
           {loading && <Spinner className="text-primary-foreground" />}
         </Button>
-      </View>
+      </Animated.View>
     </SafeAreaView>
   );
 };

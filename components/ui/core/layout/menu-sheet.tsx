@@ -10,16 +10,21 @@ import { Button } from '@/components/ui/fragments/shadcn-ui/button';
 import { useNavigation } from 'expo-router';
 import { DrawerActions } from '@react-navigation/native';
 import MenuSheetIcon from '../../fragments/svg/icons/menu-icon';
+import { useColorScheme } from 'nativewind';
+import { THEME } from '@/lib/theme';
 
 export function MenuSheet() {
   const navigation = useNavigation();
+  const { colorScheme } = useColorScheme();
+  const currentTheme = colorScheme ?? 'light';
 
+  const tintColor = THEME[currentTheme].primary;
   return (
     <Button
       size="icon"
       className="size-12 rounded-full bg-card"
       onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
-      <MenuSheetIcon className="size-5" />
+      <MenuSheetIcon stroke={tintColor} className="size-5" />
     </Button>
   );
 }

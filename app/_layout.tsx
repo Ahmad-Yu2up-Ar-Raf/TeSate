@@ -79,7 +79,7 @@ function AppBootstrap() {
         <Stack.Screen name="(auth)/forgot-password" options={DEFAULT_AUTH_SCREEN_OPTIONS} />
       </Stack.Protected>
       <Stack.Protected guard={isSignedIn}>
-        <Stack.Screen name="(drawer)" />
+        <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
         <Stack.Screen name="product" options={{ headerShown: false }} />
         <Stack.Screen name="cart" options={{ headerShown: false }} />
       </Stack.Protected>

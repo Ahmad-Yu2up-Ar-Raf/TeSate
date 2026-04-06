@@ -84,13 +84,13 @@ export function VerifyEmailForm() {
 
       {/* Action buttons */}
       <View className="gap-3">
-        <Button
+        {/* <Button
           disabled={isSubmitting || code.length !== 6}
           className="w-full gap-2"
           onPress={onSubmit}>
           {isSubmitting && <Spinner className="text-primary-foreground" size="sm" />}
           <Text>{isSubmitting ? 'Verifying...' : 'Continue'}</Text>
-        </Button>
+        </Button> */}
         <Button variant="link" className="mx-auto" disabled={isSubmitting} onPress={router.back}>
           <Text>Cancel</Text>
         </Button>

@@ -27,7 +27,7 @@ export interface GroupedInputProps {
 
 export const GroupedInput = ({ children, className, title, titleStyle }: GroupedInputProps) => {
   return (
-    <View className={cn('h-full w-full', className)}>
+    <View className={cn('h-fit w-fit', className)}>
       <View className="gap-6">{children}</View>
     </View>
   );
@@ -88,7 +88,7 @@ export const GroupedInputItem = forwardRef<TextInputB, GroupedInputItemProps>(
 
     // ✅ FIX: Simple CSS-based animated label (NO Reanimated = NO infinite loops!)
     const animatedLabelStyle = {
-      transform: shouldFloat 
+      transform: shouldFloat
         ? [{ translateY: -10 }, { scale: 0.75 }]
         : [{ translateY: 10 }, { scale: 1 }],
       color: error ? themeColors.destructive : themeColors.mutedForeground,
@@ -132,16 +132,15 @@ export const GroupedInputItem = forwardRef<TextInputB, GroupedInputItemProps>(
     }, [rightComponent]);
 
     return (
-      <Pressable onPress={handlePressablePress} disabled={disabled} className={cn(disabled ? 'opacity-60' : 'opacity-100')}>
+      <Pressable
+        onPress={handlePressablePress}
+        disabled={disabled}
+        className={cn(disabled ? 'opacity-60' : 'opacity-100')}>
         <View className="flex flex-col gap-1.5">
           <View
             className={cn(
               'relative flex-row items-center rounded-2xl border',
-              error
-                ? 'border-destructive'
-                : isFocused
-                  ? 'border-blue-500'
-                  : 'border-border'
+              error ? 'border-destructive' : isFocused ? 'border-blue-500' : 'border-border'
             )}>
             <View className="relative flex-1">
               {/* Simple CSS-based Floating Label (NO Reanimated) */}

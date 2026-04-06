@@ -16,6 +16,9 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router } from 'expo-router';
 import { cn } from '@/lib/utils';
 
+import { THEME } from '@/lib/theme';
+import { useColorScheme } from 'nativewind';
+
 type WelcomeBlockProps = {
   children?: React.ReactNode;
   title?: string;
@@ -28,12 +31,16 @@ type WelcomeBlockProps = {
 const WelcomeBlock = ({
   className,
 
-  title = `Saraya`,
+  title = `Grocer`,
 
-  description = `Kuasai Keuangan, Raih Hadiah, Berkembang Lebih Cepat!`,
+  description = `Shop for your daily needs without the hassle!`,
   ...props
 }: WelcomeBlockProps) => {
   const insets = useSafeAreaInsets();
+  const { colorScheme } = useColorScheme();
+  const currentTheme = colorScheme ?? 'light';
+  const tintColor = THEME[currentTheme].primaryForeground;
+
   return (
     <>
       <SafeAreaView
@@ -47,14 +54,14 @@ const WelcomeBlock = ({
           <ReactangleSVG className="relative size-full" />
         </View>
         <Card className="m-auto flex h-full w-full max-w-sm content-center justify-center gap-8 border-0 bg-transparent p-2 shadow-none sm:border-border">
-          <CardHeader className="relative flex w-full flex-col content-center items-center justify-center gap-8 p-0">
+          <CardHeader className="relative flex w-full flex-col content-center items-center justify-center gap-8 overflow-visible p-0">
             <View
-              className="size-fit scale-[1.9]"
+              className="flex scale-[1.2] content-center items-center justify-center overflow-visible rounded-full"
               style={{
                 elevation: 100, // For Android shadow
               }}>
               <LogoApp
-                className="relative m-auto size-full overflow-visible shadow-lg shadow-black drop-shadow-sm"
+                className="relative m-auto size-full overflow-visible shadow-lg drop-shadow-sm"
                 style={{
                   elevation: 100, // For Android shadow
                 }}
@@ -81,7 +88,7 @@ const WelcomeBlock = ({
             bottom: insets.bottom > 0 ? insets.bottom + 4 : 12,
           }}>
           <Button onPress={() => router.push('/(auth)/sign-up')} variant="default" size={'lg'}>
-            <Text className="font-cinzel_black text-lg text-primary-foreground">Mulai</Text>
+            <Text className="font-cinzel_black text-lg text-primary-foreground">Start</Text>
           </Button>
         </View>
       </SafeAreaView>

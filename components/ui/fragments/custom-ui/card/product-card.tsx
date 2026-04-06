@@ -102,7 +102,7 @@ export function ProductCard({ className, product, ...props }: componentProps) {
               onPress={handleAddToCart}>
               <Icon
                 as={ShoppingCartIcon}
-                className="size-11 text-background/85 transition-colors duration-200"
+                className="size-11 text-primary-foreground transition-colors duration-200"
               />
             </Button>
           </CardFooter>
