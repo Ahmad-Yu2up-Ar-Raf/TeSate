@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { Text } from '../../shadcn-ui/text';
-import React, { forwardRef, ReactElement, useState, useEffect } from 'react';
+import React, { forwardRef, ReactElement, useState, useEffect, useCallback, useMemo } from 'react';
 import {
   Pressable,
   TextInput as TextInputB,
@@ -14,14 +14,6 @@ import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
 import { Input } from '../../shadcn-ui/input';
 import { Textarea } from '../../shadcn-ui/textarea';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withTiming,
-  interpolate,
-  interpolateColor,
-} from 'react-native-reanimated';
 
 // ============================================
 // GroupedInput Component
@@ -81,103 +73,85 @@ export const GroupedInputItem = forwardRef<TextInputB, GroupedInputItemProps>(
     const [isFocused, setIsFocused] = useState(false);
     const { colorScheme } = useColorScheme();
 
-    const currentTheme = colorScheme ?? 'light';
-
-    const primary = '#03a1fc';
-    const mutedForeground = THEME[currentTheme].mutedForeground;
-    const destructive = THEME[currentTheme].destructive;
-    const background = THEME[currentTheme].card;
+    const themeColors = useMemo(() => {
+      const currentTheme = colorScheme ?? 'light';
+      return {
+        primary: '#03a1fc',
+        mutedForeground: THEME[currentTheme].mutedForeground,
+        destructive: THEME[currentTheme].destructive,
+        background: THEME[currentTheme].card,
+      };
+    }, [colorScheme]);
 
     const isTextarea = type === 'textarea';
-
-    // Kondisi untuk floating label
     const shouldFloat = isFocused || (value && value.toString().length > 0);
 
-    // Shared values untuk animasi
-    const animationProgress = useSharedValue(0);
+    // ✅ FIX: Simple CSS-based animated label (NO Reanimated = NO infinite loops!)
+    const animatedLabelStyle = {
+      transform: shouldFloat 
+        ? [{ translateY: -10 }, { scale: 0.75 }]
+        : [{ translateY: 10 }, { scale: 1 }],
+      color: error ? themeColors.destructive : themeColors.mutedForeground,
+    };
 
-    // Update animasi saat shouldFloat berubah
-    useEffect(() => {
-      animationProgress.value = withSpring(shouldFloat ? 1 : 0, {
-        damping: 20,
-        stiffness: 300,
-        mass: 0.5,
-      });
-    }, [shouldFloat]);
+    // ✅ FIX #3: Focus handler
+    const handleFocus = useCallback(
+      (e: any) => {
+        setIsFocused(true);
+        onFocus?.(e);
+      },
+      [onFocus]
+    );
 
-    // Animated style untuk label
-    const animatedLabelStyle = useAnimatedStyle(() => {
-      // Interpolate translateY: dari tengah (10) ke atas (-10)
-      const translateY = interpolate(animationProgress.value, [0, 1], [10, -10]);
+    // ✅ FIX #4: Blur handler
+    const handleBlur = useCallback(
+      (e: any) => {
+        setIsFocused(false);
+        onBlur?.(e);
+      },
+      [onBlur]
+    );
 
-      // Interpolate scale: dari normal (1) ke kecil (0.75)
-      const scale = interpolate(animationProgress.value, [0, 1], [1, 0.75]);
-
-      // Interpolate color
-      let labelColor;
-      if (error) {
-        // Kalau error, tetap merah
-        labelColor = destructive;
-      } else {
-        // Interpolate dari muted ke primary saat focus
-        labelColor = interpolateColor(animationProgress.value, [0, 1], [mutedForeground, primary]);
-      }
-
-      return {
-        transform: [{ translateY }, { scale }],
-        color: labelColor,
-      };
-    });
-
-    const toggleKeyboard = () => {
+    // ✅ FIX #5: Handle Pressable press
+    const handlePressablePress = useCallback(() => {
+      if (disabled) return;
       if (Keyboard.isVisible()) {
         Keyboard.dismiss();
       } else {
-        ref && 'current' in ref && ref.current?.focus();
+        setTimeout(() => {
+          if (ref && 'current' in ref && ref.current) {
+            ref.current.focus();
+          }
+        }, 100);
       }
-    };
-    const handleFocus = (e: any) => {
-      setIsFocused(true);
-      onFocus?.(e);
-      toggleKeyboard();
-    };
+    }, [ref, disabled]);
 
-    const handleBlur = (e: any) => {
-      setIsFocused(false);
-      onBlur?.(e);
-    };
-
-    const renderRightComponent = () => {
+    const renderRightComponent = useCallback(() => {
       if (!rightComponent) return null;
       return typeof rightComponent === 'function' ? rightComponent() : rightComponent;
-    };
+    }, [rightComponent]);
 
     return (
-      <Pressable
-        onPress={() => ref && 'current' in ref && ref.current?.focus()}
-        disabled={disabled}
-        className={cn(disabled ? 'opacity-60' : 'opacity-100')}>
+      <Pressable onPress={handlePressablePress} disabled={disabled} className={cn(disabled ? 'opacity-60' : 'opacity-100')}>
         <View className="flex flex-col gap-1.5">
           <View
             className={cn(
               'relative flex-row items-center rounded-2xl border',
-              // PRIORITY: Error > Focus > Default
               error
-                ? 'border-destructive' // Error tetap merah meski focused
+                ? 'border-destructive'
                 : isFocused
-                  ? 'border-blue-500' // Focus biru kalau gak error
-                  : 'border-border' // Default
+                  ? 'border-blue-500'
+                  : 'border-border'
             )}>
             <View className="relative flex-1">
-              {/* Animated Floating Label */}
+              {/* Simple CSS-based Floating Label (NO Reanimated) */}
               {label && (
-                <Animated.Text
+                <Text
                   style={[
                     {
                       position: 'absolute',
                       left: 12,
                       paddingHorizontal: 4,
-
                       zIndex: 1,
                       fontSize: 15,
                       fontWeight: '400',
@@ -189,25 +163,23 @@ export const GroupedInputItem = forwardRef<TextInputB, GroupedInputItemProps>(
                     isFocused && 'bg-background'
                   )}>
                   {label}
-                </Animated.Text>
+                </Text>
               )}
 
               {isTextarea ? (
-                <>
-                  <Textarea
-                    ref={ref}
-                    editable={!disabled}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
-                    value={value}
-                    className={cn(
-                      'border-0 bg-transparent',
-                      error && 'text-destructive',
-                      label && 'pt-1.5'
-                    )}
-                    {...props}
-                  />
-                </>
+                <Textarea
+                  ref={ref}
+                  editable={!disabled}
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                  value={value}
+                  className={cn(
+                    'border-0 bg-transparent',
+                    error && 'text-destructive',
+                    label && 'pt-1.5'
+                  )}
+                  {...props}
+                />
               ) : (
                 <Input
                   ref={ref}

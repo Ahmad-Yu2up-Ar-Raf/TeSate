@@ -5,14 +5,26 @@ import { Loader2Icon, LucideIcon, LucideProps } from 'lucide-react-native';
 type IconProps = LucideProps & {
   as?: LucideIcon;
   className?: string;
+  size?: number | 'sm' | 'md' | 'lg';
 };
-function Spinner({ className, as, ...props }: IconProps) {
+
+// Map size variants to pixel values
+const sizeVariants: Record<string | number, number> = {
+  'sm': 16,
+  'md': 20,
+  'lg': 24,
+};
+
+function Spinner({ className, as, size = 'md', ...props }: IconProps) {
+  // Convert size variant to pixel value if needed
+  const pixelSize = typeof size === 'number' ? size : (sizeVariants[size] || 20);
+  
   return (
     <Icon
       as={as ?? Loader2Icon}
-      size={20}
+      size={pixelSize}
       aria-label="Loading"
-      className={cn('size-4 animate-spin', className)}
+      className={cn('animate-spin', className)}
       {...props}
     />
   );

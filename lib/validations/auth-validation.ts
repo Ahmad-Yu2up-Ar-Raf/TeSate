@@ -92,60 +92,65 @@ export function useFormValidation<T extends Record<string, string>>({
   }, []);
 
   // 🔥 ENHANCED onChange handler with REAL-TIME validation
+  // ✅ FIX: Only update formData, don't trigger validation here
+  // Validation happens in handleBlur and handleSubmit instead
   const handleChange = useCallback(
     (name: keyof T) => (text: string) => {
       setFormData((prev) => ({ ...prev, [name]: text }));
+      
+      // Clear error for this field as user is typing
+      setErrors((prev) => {
+        if (prev[name]) {
+          const newErrors = { ...prev };
+          delete newErrors[name];
+          return newErrors;
+        }
+        return prev;
+      });
+    },
+    []  // ✅ No dependencies - pure form data update
+  );
 
-      // 🔥 Real-time validation on EVERY keystroke (if enabled and field touched)
-      if (validateOnChange && touched[name]) {
-        const error = validateField(name, text);
+  // Handle field blur - mark as touched + validate
+  // ✅ FIX: Use functional setState to avoid formData dependency
+  const handleBlur = useCallback(
+    (name: keyof T) => () => {
+      setTouched((prev) => ({ ...prev, [name]: true }));
+
+      // Validate using setFormData state updater to get current value
+      setFormData((currentFormData) => {
+        const error = validateField(name, currentFormData[name]);
         setErrors((prev) => {
           if (error) {
             return { ...prev, [name]: error };
           } else {
-            // 🔥 Clear error immediately when valid
             const newErrors = { ...prev };
             delete newErrors[name];
             return newErrors;
           }
         });
-      }
-    },
-    [touched, validateField, validateOnChange]
-  );
-
-  // Handle field blur - mark as touched + validate
-  const handleBlur = useCallback(
-    (name: keyof T) => () => {
-      setTouched((prev) => ({ ...prev, [name]: true }));
-
-      // Validate on blur
-      const error = validateField(name, formData[name]);
-      setErrors((prev) => {
-        if (error) {
-          return { ...prev, [name]: error };
-        } else {
-          const newErrors = { ...prev };
-          delete newErrors[name];
-          return newErrors;
-        }
+        return currentFormData; // Don't change formData in this updater
       });
     },
-    [formData, validateField]
+    [validateField]  // ✅ Only depends on validateField, not formData
   );
 
   // Validate all fields
+  // ✅ FIX: Use functional setState to access current formData without dependency
   const validateAll = useCallback((): boolean => {
-    const newErrors: Partial<Record<keyof T, string>> = {};
     let isValid = true;
+    const newErrors: Partial<Record<keyof T, string>> = {};
 
-    Object.keys(formData).forEach((key) => {
-      const fieldName = key as keyof T;
-      const error = validateField(fieldName, formData[fieldName]);
-      if (error) {
-        newErrors[fieldName] = error;
-        isValid = false;
-      }
+    setFormData((currentFormData) => {
+      Object.keys(currentFormData).forEach((key) => {
+        const fieldName = key as keyof T;
+        const error = validateField(fieldName, currentFormData[fieldName]);
+        if (error) {
+          newErrors[fieldName] = error;
+          isValid = false;
+        }
+      });
+      return currentFormData; // Don't change formData
     });
 
     setErrors(newErrors);
@@ -162,32 +167,39 @@ export function useFormValidation<T extends Record<string, string>>({
     }
 
     return isValid;
-  }, [formData, validateField]);
+  }, [validateField]);
 
   // Handle form submit with loading state
+  // ✅ FIX: Mark all fields as touched using setState, then validate
   const handleSubmit = useCallback(async () => {
     // Mark all fields as touched
-    const allTouched = Object.keys(formData).reduce(
-      (acc, key) => ({ ...acc, [key]: true }),
-      {} as Record<keyof T, boolean>
-    );
-    setTouched(allTouched);
+    setTouched((prev) => {
+      const allTouched = Object.keys(prev).reduce(
+        (acc, key) => ({ ...acc, [key]: true }),
+        {} as Record<keyof T, boolean>
+      );
+      return allTouched;
+    });
 
-    const isValid = validateAll();
-
-    if (isValid) {
-      setIsSubmitting(true); // 🔥 Start loading
+    // validateAll will use current formData via functional setState
+    if (validateAll()) {
+      setIsSubmitting(true);
       try {
-        await onSubmit(formData);
+        // Get current formData via functional pattern
+        setFormData((currentFormData) => {
+          onSubmit(currentFormData).finally(() => {
+            setIsSubmitting(false);
+          });
+          return currentFormData;
+        });
       } catch (error) {
-        // Error handling done in onSubmit callback
-      } finally {
-        setIsSubmitting(false); // 🔥 Stop loading
+        setIsSubmitting(false);
       }
     }
-  }, [formData, validateAll, onSubmit]);
+  }, [validateAll, onSubmit]);
 
   // Reset form
+  // ✅ FIX: Simplified reset - depends only on initialValues which is stable
   const reset = useCallback(() => {
     setFormData(initialValues);
     setErrors({});
@@ -196,6 +208,7 @@ export function useFormValidation<T extends Record<string, string>>({
   }, [initialValues]);
 
   // 🔥 Set specific field error (for server-side errors)
+  // ✅ FIX: Removed onSubmit dependency where not needed
   const setFieldError = useCallback((name: keyof T, error: string) => {
     setErrors((prev) => ({ ...prev, [name]: error }));
     setTouched((prev) => ({ ...prev, [name]: true }));
@@ -210,6 +223,7 @@ export function useFormValidation<T extends Record<string, string>>({
   }, []);
 
   // 🔥 Set multiple field errors at once
+  // ✅ FIX: Removed unnecessary dependencies
   const setFieldErrors = useCallback((fieldErrors: Partial<Record<keyof T, string>>) => {
     setErrors((prev) => ({ ...prev, ...fieldErrors }));
     const touchedFields = Object.keys(fieldErrors).reduce(

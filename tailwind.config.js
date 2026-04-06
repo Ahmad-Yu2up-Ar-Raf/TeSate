@@ -71,9 +71,6 @@ module.exports = {
       poppins_semibold: ['Poppins_600SemiBold', 'sans-serif'],
       poppins_bold: ['Poppins_700Bold', 'sans-serif'],
       CactusClassicalSerif_400Regular: ['CactusClassicalSerif_400Regular', 'serif'],
-      // schluber: ['Schluber', 'sans-serif'],
-      // arabic: ['Arabic', 'sans-serif'],
-      // sans: ['poppins_regular', 'poppins_medium', 'poppins_semibold', 'poppins_bold'],
       schluber: ['Schluber'],
       HanSerifRegular: ['HanSerifRegular', 'serif'],
       HanSerifSemiBold: ['HanSerifSemiBold', 'serif'],
@@ -87,7 +84,6 @@ module.exports = {
       source_serif_medium: ['SourceSerifPro_300Light', 'serif'],
       source_serif_semibold: ['SourceSerifPro_600SemiBold', 'serif'],
       source_serif_bold: ['SourceSerifPro_700Bold', 'serif'],
-
       teko_semibold: ['Teko_600SemiBold'],
       teko_bold: ['Teko_700Bold'],
     },

@@ -6,11 +6,11 @@ import { useColorScheme } from 'nativewind';
 import { focusManager, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppState, Platform } from 'react-native';
 import type { AppStateStatus } from 'react-native';
-
+import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
 import { ToastProvider } from '../ui/fragments/shadcn-ui/toast';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { CartProvider } from './CartProvider';
-
+import { tokenCache } from '@clerk/clerk-expo/token-cache';
 type ComponentProps = {
   children?: React.ReactNode;
 };
@@ -49,22 +49,24 @@ export default function Provider({ children }: ComponentProps) {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
-        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-        {/*
+    <ClerkProvider tokenCache={tokenCache}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
+          <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+          {/*
           ✅ Provider order:
           - CartProvider: top level untuk global cart access
           - GestureHandlerRootView: untuk gesture handling
           - ToastProvider: untuk toast notifications
         */}
-        <CartProvider>
-          <GestureHandlerRootView>
-            <ToastProvider>{children}</ToastProvider>
-          </GestureHandlerRootView>
-        </CartProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+          <CartProvider>
+            <GestureHandlerRootView>
+              <ToastProvider>{children}</ToastProvider>
+            </GestureHandlerRootView>
+          </CartProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ClerkProvider>
   );
 }
 

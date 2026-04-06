@@ -8,7 +8,7 @@
 //     selama cache masih fresh (hanya re-compute filter dari cache)
 
 import { queryOptions } from '@tanstack/react-query';
-import { fetchAllProducts } from './products-server';
+import { fetchAllProducts, fetchProductById } from './products-server';
 import { Product, Category } from '@/type/product-type';
 
 // ─── Filter shape ─────────────────────────────────────────────────────────────
@@ -40,7 +40,7 @@ export const ProductsKeys = {
     return [...ProductsKeys.lists(), normalizedFilters] as const;
   },
 
-  detail: (id: string) => [...ProductsKeys.all, 'detail', id] as const,
+  detail: (id: number) => [...ProductsKeys.all, 'detail', id] as const,
 };
 
 // ─── List Query Options ───────────────────────────────────────────────────────
@@ -81,6 +81,20 @@ export function ProductsListQueryOptions(filters?: ProductsListFilters & { base_
     // Data tetap di memory 30 menit sejak terakhir digunakan
     gcTime: 30 * 60 * 1000,
 
+    retry: 1,
+  });
+}
+
+export function productByIdQueryOptions(id: number) {
+  return queryOptions({
+    queryKey: ProductsKeys.detail(id),
+    queryFn: async () => {
+      const raw = await fetchProductById(id);
+      return raw;
+    },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    enabled: !!id && !isNaN(id),
     retry: 1,
   });
 }

@@ -19,7 +19,7 @@
 //
 
 import React from 'react';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColorScheme } from 'nativewind';
 import { THEME } from '@/lib/theme';
@@ -34,6 +34,7 @@ import NotifIcon from '../../fragments/svg/icons/notif-icon';
 import { Icon } from '../../fragments/shadcn-ui/icon';
 import { useCart } from '@/components/provider/CartProvider';
 import { cn } from '@/lib/utils';
+import { router } from 'expo-router';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -74,7 +75,9 @@ function HeaderComponent({
   const { colorScheme } = useColorScheme();
   const currentTheme = colorScheme ?? 'light';
   const { count: cartCount } = useCart(); // ✅ Get cart count
-
+  const handleLeave = () => {
+    router.back();
+  };
   const bgColor = transparent ? 'transparent' : THEME[currentTheme].background;
 
   const foregroundColor = THEME[currentTheme].foreground;
@@ -82,12 +85,15 @@ function HeaderComponent({
     <>
       <View
         style={{ paddingTop: insets.top + 7, backgroundColor: bgColor }}
-        className="flex-row items-center justify-between px-6 pb-3">
+        className="flex-row items-center justify-between px-5 pb-3">
         {/* Left action */}
         <View className="w-10 items-start">
-          {LeftIcon && leftAction ? (
-            <Button size="icon" className="rounded-full bg-card">
-              <MenuSheetIcon className="size-5" />
+          {LeftIcon ? (
+            <Button
+              onPress={leftAction ?? handleLeave}
+              size="icon"
+              className="size-12 rounded-full bg-card">
+              <Icon as={LeftIcon} className="size-6" />
             </Button>
           ) : (
             <MenuSheet />
@@ -124,23 +130,25 @@ function HeaderComponent({
         <View className="items-end">
           {RigthComponent ? (
             RigthComponent
-          ) : RightIcon && rightAction ? (
-            <View className="relative">
-              <Button size="icon" className="size-12 rounded-full bg-card" onPress={rightAction}>
-                <Icon as={ShoppingBagIcon} className="size-5" />
-              </Button>
-              {/* ✅ Cart badge */}
-              {cartCount > 0 && (
-                <View className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-primary">
-                  <Text variant={'small'} className="text-[10px] font-bold text-primary-foreground">
-                    {cartCount > 99 ? '99+' : cartCount}
-                  </Text>
-                </View>
-              )}
-            </View>
+          ) : RightIcon ? (
+            <Button
+              onPress={rightAction ?? handleLeave}
+              size="icon"
+              className="size-12 rounded-full bg-card">
+              <Icon as={RightIcon} className="size-6" />
+            </Button>
           ) : (
-            <View className="relative">
-              <Button size="icon" className="size-12 rounded-full bg-card">
+            <Pressable
+              onPress={() => {
+                router.push('/cart');
+              }}
+              className="relative">
+              <Button
+                onPress={() => {
+                  router.push('/cart');
+                }}
+                size="icon"
+                className="size-12 rounded-full bg-card">
                 <Icon as={ShoppingCartIcon} className="size-5" />
               </Button>
               {/* ✅ Cart badge */}
@@ -151,7 +159,7 @@ function HeaderComponent({
                   </Text>
                 </View>
               )}
-            </View>
+            </Pressable>
           )}
         </View>
       </View>
